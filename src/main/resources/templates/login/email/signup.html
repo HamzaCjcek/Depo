@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Form</title>
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="/login/email_css/css/style.css">
+    <!-- JavaScript -->
+    <script src="/login/email_css/js/signup.js" defer></script>
+</head>
+<body>
+<section>
+    <form id="signup-form">
+        <h1>Sign Up</h1>
+        <!-- Name Input -->
+        <div class="inputbox">
+            <ion-icon name="person-outline"></ion-icon>
+            <input type="text" id="username" name="username" required placeholder=" ">
+            <label for="username">Name</label>
+        </div>
+        <!-- Email Input -->
+        <div class="inputbox">
+            <ion-icon name="mail-outline"></ion-icon>
+            <input type="email" id="email" name="email" required placeholder=" ">
+            <label for="email">Email</label>
+        </div>
+        <!-- Password Input -->
+        <div class="inputbox">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <input type="password" id="password" name="password" required placeholder=" ">
+            <label for="password">Password</label>
+        </div>
+        <!-- Confirm Password Input -->
+        <div class="inputbox">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <input type="password" id="passwordcon" name="passwordcon" required placeholder=" ">
+            <label for="passwordcon">Confirm Password</label>
+        </div>
+        <!-- Submit Button -->
+        <button id="submit" type="submit">Sign Up</button>
+        <!-- Login Redirect -->
+        <div class="register">
+            <p>Already have an account? <a href="/req/login">Log In</a></p>
+        </div>
+        <!-- Error Message -->
+        <div id="error-message" style="color: red;"></div>
+    </form>
+</section>
+
+<script>
+    // Sign-up formu
+    document.getElementById("signup-form").addEventListener("submit", function(event) {
+        event.preventDefault(); // Formun sayfayı yenilemesini engeller
+
+        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('passwordcon').value;
+
+        // Şifrelerin uyumlu olup olmadığını kontrol et
+        if (password !== confirmPassword) {
+            document.getElementById('error-message').textContent = "Passwords do not match!";
+            return;
+        }
+
+        const data = { username, email, password };
+
+        // Veriyi JSON formatında gönder
+        fetch('/req/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    // Eğer sunucu 200 dışında bir durum dönerse hata mesajı göster
+                    return response.json().then(data => {
+                        document.getElementById('error-message').textContent = data.message || 'An error occurred. Please try again.';
+                    });
+                }
+                // Başarı durumunda /req/login sayfasına yönlendirilir
+                window.location.href = '/req/login'; // Kayıt işlemi tamamlandıktan sonra login sayfasına yönlendir
+            })
+            .catch(error => {
+                // Hata durumunda kullanıcıya mesaj göster
+                document.getElementById('error-message').textContent = 'There was an issue with your request. Please try again later.';
+            });
+    });
+</script>
+</body>
+</html>

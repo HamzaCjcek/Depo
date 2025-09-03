@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<th:block th:replace="~{admin_layout :: admin_head('İndex')}"></th:block>
+
+
+<body>
+    <div class="page-wrapper">
+        <!-- HEADER MOBILE-->
+        <th:block th:replace="~{admin_layout :: admin_header}"></th:block>
+        <!-- END HEADER MOBILE-->
+
+        <!-- MENU SIDEBAR-->
+        <th:block th:replace="~{admin_layout :: admin_aside}"></th:block>
+
+        <!-- END MENU SIDEBAR-->
+
+        <!-- PAGE CONTAINER-->
+        <div class="page-container">
+            <!-- HEADER DESKTOP-->
+            <th:block th:replace="~{admin_layout :: admin_desktop}"></th:block>
+            <!-- HEADER DESKTOP-->
+
+            <!-- MAIN CONTENT-->
+            <div class="main-content">
+                <div class="section__content section__content--p30">
+                    <div class="container-fluid">
+                        <div class="row m-t-25">
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="overview-item overview-item--c1">
+                                    <div class="overview__inner">
+                                        <div class="overview-box clearfix">
+                                            <div class="icon">
+                                                <i class="zmdi zmdi-account-o"></i>
+                                            </div>
+                                            <div class="text">
+                                                <h2>10368</h2>
+                                                <span>Aktif Çalışan Sayısı</span>
+                                            </div>
+                                        </div>
+                                        <div class="overview-chart">
+                                            <canvas id="widgetChart1"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="overview-item overview-item--c2">
+                                    <div class="overview__inner">
+                                        <div class="overview-box clearfix">
+                                            <div class="icon">
+                                                <i class="zmdi zmdi-shopping-cart"></i>
+                                            </div>
+                                            <div class="text">
+                                                <h2>388,688</h2>
+                                                <span>Stok Miktari</span>
+                                            </div>
+                                        </div>
+                                        <div class="overview-chart">
+                                            <canvas id="widgetChart2"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="overview-item overview-item--c3">
+                                    <div class="overview__inner">
+                                        <div class="overview-box clearfix">
+                                            <div class="icon">
+                                                <i class="zmdi zmdi-calendar-note"></i>
+                                            </div>
+                                            <div class="text">
+                                                <h2>1,086</h2>
+                                                <span>Son 6 Aylik Satılan Miktar</span>
+                                            </div>
+                                        </div>
+                                        <div class="overview-chart">
+                                            <canvas id="widgetChart3"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="overview-item overview-item--c4">
+                                    <div class="overview__inner">
+                                        <div class="overview-box clearfix">
+                                            <div class="icon">
+                                                <i class="zmdi zmdi-money"></i>
+                                            </div>
+                                            <div class="text">
+                                                <h2>$1,060,386</h2>
+                                                <span>Total Ciro</span>
+                                            </div>
+                                        </div>
+                                        <div class="overview-chart">
+                                            <canvas id="widgetChart4"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- Üst kısım: Revenue Distribution -->
+                            <div class="col-lg-12">
+                                <div class="au-card chart-percent-card">
+                                    <div class="au-card-inner">
+                                        <h3 class="title-2 tm-b-5">Ürünler & Stok</h3>
+                                        <div class="row no-gutters">
+                                            <div class="col-xl-12">
+                                                <div class="percent-chart">
+                                                    <canvas id="percent-chart"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Alt kısım: Recent Reports -->
+                            <!-- Satır 1 -->
+                            <div class="col-lg-6 col-md-6">
+                                <div class="au-card recent-report">
+                                    <div class="au-card-inner">
+                                        <h3 class="title-2">2021 Satış Grafiği</h3>
+                                        <div class="recent-report__chart">
+                                            <canvas id="recent-rep-chart-1"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-md-6">
+                                <div class="au-card recent-report">
+                                    <div class="au-card-inner">
+                                        <h3 class="title-2">2022 Satış Grafiği</h3>
+                                        <div class="recent-report__chart">
+                                            <canvas id="recent-rep-chart-2"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Satır 2 -->
+                            <div class="col-lg-6 col-md-6">
+                                <div class="au-card recent-report">
+                                    <div class="au-card-inner">
+                                        <h3 class="title-2">2023 Satış Grafiği</h3>
+                                        <div class="recent-report__chart">
+                                            <canvas id="recent-rep-chart-3"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-md-6">
+                                <div class="au-card recent-report">
+                                    <div class="au-card-inner">
+                                        <h3 class="title-2">2024 Satış Grafiği</h3>
+                                        <div class="recent-report__chart">
+                                            <canvas id="recent-rep-chart-4"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Satır 3 -->
+                            <div class="col-lg-12">
+                                <div class="au-card recent-report">
+                                    <div class="au-card-inner">
+                                        <h3 class="title-2">2025 Yapay Zeka Tahmin Satış Grafiği</h3>
+                                        <div class="recent-report__chart">
+                                            <canvas id="recent-rep-tahmin-2025"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="title-1 m-b-25">Yapay Zeka Sonuçları ve Önerileri</h2>
+                                <div class="table-responsive table--no-card m-b-40">
+                                    <table class="table table-borderless table-striped table-earning">
+                                        <thead>
+                                        <tr>
+                                            <th>Ürün ID</th>
+                                            <th>Ürün Adı</th>
+                                            <th>Yıl</th>
+                                            <th>Ay</th>
+                                            <th class="text-end">Tahmin</th>
+                                            <th class="text-end">Geçmiş Ortalama</th>
+                                            <th class="text-end">Değişim %</th>
+                                            <th>Yorum</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="tahminler-body">
+                                        <!-- JS ile doldurulacak -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END MAIN CONTENT-->
+            <!-- END PAGE CONTAINER-->
+        </div>
+
+    </div>
+</body>
+<th:block th:replace="~{admin_layout :: admin_scripts}"></th:block>
+<script>
+    // Zaman aşımı için 10 dakikalık oturum süresi
+    let sessionTimeout = setTimeout(logoutRedirect, 600000); // 600000 ms = 10 dakika
+
+    function resetTimeout() {
+        clearTimeout(sessionTimeout);
+        sessionTimeout = setTimeout(logoutRedirect, 600000);
+    }
+
+    function logoutRedirect() {
+        window.location.href = "/req/login";  // süresi dolunca login sayfasına yönlendir
+    }
+
+    // Kullanıcı hareketleriyle zamanı sıfırla
+    window.addEventListener('mousemove', resetTimeout);
+    window.addEventListener('keydown', resetTimeout);
+
+    // Sunucudan oturum durumunu kontrol et
+    fetch('/api/isLoggedIn')
+        .then(response => response.json())
+        .then(isLoggedIn => {
+            const logoutLink = document.getElementById('logoutLink');
+            if (isLoggedIn) {
+                logoutLink.style.display = 'block'; // görünür yap
+            } else {
+                logoutLink.style.display = 'none'; // gizle
+            }
+        });
+</script>
+
+</html>
+<!-- end document-->

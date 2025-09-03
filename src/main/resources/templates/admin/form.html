@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{admin_layout :: admin_head('Form')}"></th:block>
+
+<body>
+<div class="page-wrapper">
+    <!-- HEADER MOBILE-->
+    <th:block th:replace="~{admin_layout :: admin_header}"></th:block>
+    <!-- END HEADER MOBILE-->
+
+    <!-- MENU SIDEBAR-->
+    <th:block th:replace="~{admin_layout :: admin_aside}"></th:block>
+    <!-- END MENU SIDEBAR-->
+
+    <!-- PAGE CONTAINER-->
+    <div class="page-container">
+        <!-- HEADER DESKTOP-->
+        <th:block th:replace="~{admin_layout :: admin_desktop}"></th:block>
+        <!-- HEADER DESKTOP-->
+
+        <!-- MAIN CONTENT-->
+        <div class="main-content">
+            <div class="section__content section__content--p30">
+                <div class="container-fluid">
+
+                    <!-- 1. ÜRÜNLER TABLOSU -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-dark text-white">
+                            <h4 class="mb-0">Ürünler Listesi</h4>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Ürün Adı</th>
+                                    <th>Kategori</th>
+                                    <th>Barkod No</th>
+                                    <th>Birim Fiyat</th>
+                                    <th>Stok Miktarı</th>
+                                    <th>Kritik Stok</th>
+                                    <th>Üretim Tarihi</th>
+                                    <th>Son Kullanma Tarihi</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="urun : ${urunlerList}">
+                                    <td th:text="${urun.id}"></td>
+                                    <td th:text="${urun.urun_adi}"></td>
+                                    <td th:text="${urun.kategori}"></td>
+                                    <td th:text="${urun.barkod_no}"></td>
+                                    <td th:text="${urun.birim_fiyat}"></td>
+                                    <td th:text="${urun.stok_miktari}"></td>
+                                    <td th:text="${urun.kritik_stok}"></td>
+                                    <td th:text="${#dates.format(urun.uretim_tarihi, 'dd-MM-yyyy')}"></td>
+                                    <td th:text="${#dates.format(urun.son_kullanma_tarihi, 'dd-MM-yyyy')}"></td>
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 2. TALEP ANOMALİLERİ TABLOSU -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">Talep Anomalilerinin Tespiti</h4>
+                        </div>
+                        <div class="card-body">
+
+                            <!-- Talep Ekleme Formu -->
+                            <h4>Yeni Talep Ekle</h4>
+                            <form th:action="@{/form/talep}" th:object="${newTalep}" method="post">
+                                <div class="mb-3">
+                                    <label>Talep Eden Firma</label>
+                                    <input type="text" th:field="*{talep_eden_firma}" class="form-control"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Ürün ID</label>
+                                    <input type="number" th:field="*{urun_id}" class="form-control" min="1" max="4"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Talep Miktarı</label>
+                                    <input type="number" th:field="*{talep_miktari}" class="form-control"/>
+                                </div>
+                                <button type="submit" class="btn btn-success">Kaydet</button>
+                            </form>
+
+                            <!-- Talep Tablosu -->
+                            <table class="table table-bordered table-striped mt-3">
+                                <thead class="table-primary">
+                                <tr>
+                                    <th>Talep Eden Firma</th>
+                                    <th>Ürün ID</th>
+                                    <th>Talep Miktarı</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="talep : ${talepList}">
+                                    <td th:text="${talep.getTalep_eden_firma()}"></td>
+                                    <td th:text="${talep.getUrun_id()}"></td>
+                                    <td th:text="${talep.getTalep_miktari()}"></td>
+                                    <td>
+                                        <a th:href="@{'/form/talep/delete/' + ${talep.get_idTalepAnomalileriniTespit()}}"
+                                           class="btn btn-danger btn-sm"
+                                           onclick="return confirm('Bu talebi silmek istediğinize emin misiniz?');">
+                                            Sil
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+
+                    <!-- 3. STOK YETERSİZ ÜRÜNLER -->
+                    <div class="card">
+                        <div class="card-header bg-danger text-white">
+                            <h4 class="mb-0">Stok Yetersiz Ürünler</h4>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered table-striped">
+                                <thead class="table-danger">
+                                <tr>
+                                    <th>Ürün Bilgisi</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="urun : ${yetersizListe}">
+                                    <td th:text="${urun.urunAdi}"></td>
+                                    <td th:text="${urun.stok}"></td>
+                                    <td th:text="${urun.toplamTalep}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<th:block th:replace="~{admin_layout :: admin_scripts}"></th:block>
+</html>

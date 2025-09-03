@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<th:block th:replace="~{admin_layout :: admin_head('Table')}"></th:block>
+
+<body>
+<div class="page-wrapper">
+    <th:block th:replace="~{admin_layout :: admin_header}"></th:block>
+    <th:block th:replace="~{admin_layout :: admin_aside}"></th:block>
+
+    <div class="page-container">
+        <th:block th:replace="~{admin_layout :: admin_desktop}"></th:block>
+
+        <div class="main-content">
+            <div class="section__content section__content--p30">
+                <div class="container-fluid">
+
+                    <!-- CIRO TABLOSU -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="title-5 m-b-35">Ciro Tablosu</h3>
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Year</th>
+                                    <th>Jan</th>
+                                    <th>Feb</th>
+                                    <th>Mar</th>
+                                    <th>Apr</th>
+                                    <th>May</th>
+                                    <th>Jun</th>
+                                    <th>Jul</th>
+                                    <th>Aug</th>
+                                    <th>Sep</th>
+                                    <th>Oct</th>
+                                    <th>Nov</th>
+                                    <th>Dec</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="c : ${ciroList}">
+                                    <td th:text="${c._ciroid}"></td>
+                                    <td th:text="${c._year}"></td>
+                                    <td th:text="${c._jan}"></td>
+                                    <td th:text="${c._feb}"></td>
+                                    <td th:text="${c._mar}"></td>
+                                    <td th:text="${c._apr}"></td>
+                                    <td th:text="${c._may}"></td>
+                                    <td th:text="${c._jun}"></td>
+                                    <td th:text="${c._jul}"></td>
+                                    <td th:text="${c._aug}"></td>
+                                    <td th:text="${c._sep}"></td>
+                                    <td th:text="${c._oct}"></td>
+                                    <td th:text="${c._nov}"></td>
+                                    <td th:text="${c.getDec()}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- CIRO GRAFİĞİ -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <h3 class="title-5 m-b-35">Ciro Grafiği</h3>
+                            <canvas id="ciroChart" height="100"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<th:block th:replace="~{admin_layout :: admin_scripts}"></th:block>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    fetch('/ciro/json')
+        .then(response => response.json())
+        .then(data => {
+            if (!data || data.length === 0) {
+                console.warn('Ciro verisi boş.');
+                return;
+            }
+
+            const tbody = document.getElementById('ciroTbody');
+            data.forEach(c => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${c._ciroid}</td>
+                    <td>${c._year}</td>
+                    <td>${c._jan}</td>
+                    <td>${c._feb}</td>
+                    <td>${c._mar}</td>
+                    <td>${c._apr}</td>
+                    <td>${c._may}</td>
+                    <td>${c._jun}</td>
+                    <td>${c._jul}</td>
+                    <td>${c._aug}</td>
+                    <td>${c._sep}</td>
+                    <td>${c._oct}</td>
+                    <td>${c._nov}</td>
+                    <td>${c._dec}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        })
+        .catch(err => console.error('Error fetching data:', err));
+</script>
+<script>
+    fetch('/ciro_tahminler')
+        .then(response => response.json())
+        .then(data => {
+            const labels = data.map(item => item.tarih); // get_tarih() karşılığı
+            const ortalama = data.map(item => item.ortalama);
+            const kotu = data.map(item => item.kotu_senaryo);
+            const iyi = data.map(item => item.iyi_senaryo);
+
+            const ctx = document.getElementById('ciroChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Ortalama',
+                            data: ortalama,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            fill: true
+                        },
+                        {
+                            label: 'Kötü Senaryo',
+                            data: kotu,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            fill: true
+                        },
+                        {
+                            label: 'İyi Senaryo',
+                            data: iyi,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+</script>
+
+
+</html>

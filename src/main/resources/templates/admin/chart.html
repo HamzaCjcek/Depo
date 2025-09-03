@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>2025 Yapay Zeka Tahminleri</title>
+    <th:block th:replace="~{admin_layout :: admin_head('Charts')}"></th:block>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="page-wrapper">
+    <!-- HEADER & SIDEBAR -->
+    <th:block th:replace="~{admin_layout :: admin_header}"></th:block>
+    <th:block th:replace="~{admin_layout :: admin_aside}"></th:block>
+
+    <!-- PAGE CONTAINER -->
+    <div class="page-container">
+        <th:block th:replace="~{admin_layout :: admin_desktop}"></th:block>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <div class="section__content section__content--p30">
+                <div class="container-fluid">
+
+                    <!-- Tahmin Tablosu -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h2 class="title-1 m-b-25">2025 Yapay Zeka Tahminleri</h2>
+                            <div class="table-responsive table--no-card m-b-40">
+                                <table class="table table-borderless table-striped table-earning">
+                                    <thead>
+                                    <tr>
+                                        <th>Ürün</th>
+                                        <th>Tüketilen Miktar</th>
+                                        <th>Ortalama Yıllık Değişim %</th>
+                                        <th>Tahmin Artış</th>
+                                        <th>Tahmin Azalış</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tahminler-body">
+                                    <!-- JS ile doldurulacak -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bar Chart -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="au-card m-b-30">
+                                <div class="au-card-inner">
+                                    <h3 class="title-2 m-b-40">Ürün Tüketim Tahmin Grafiği</h3>
+                                    <canvas id="barChartTahmin" style="height:400px;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- END MAIN CONTENT -->
+    </div>
+    <!-- END PAGE CONTAINER -->
+</div>
+
+<th:block th:replace="~{admin_layout :: admin_scripts}"></th:block>
+<script>
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Tüketilen Miktar",
+                data: tuketilen,
+                backgroundColor: backgroundColors,
+                borderColor: borderColors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true },
+                tooltip: { mode: 'index', intersect: false },
+                datalabels: {
+                    anchor: 'end',        // bar üstüne
+                    align: 'end',
+                    color: '#000',        // siyah yazı
+                    font: {
+                        weight: 'bold'
+                    },
+                    formatter: function(value) {
+                        return value;     // bar üstünde gösterilecek sayı
+                    },
+                    backgroundColor: 'rgba(255,255,255,0.7)', // etiketi button gibi yapar
+                    borderRadius: 4,
+                    padding: 4
+                }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        },
+        plugins: [ChartDataLabels] // plugin ekle
+    });
+
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const tbody = document.getElementById("tahminler-body");
+        const ctx = document.getElementById("barChartTahmin").getContext("2d");
+
+        fetch("/yillik_tahminler")
+            .then(res => {
+                if (!res.ok) throw new Error("Sunucudan veri alınamadı: " + res.status);
+                return res.json();
+            })
+            .then(data => {
+                const labels = [];
+                const tuketilen = [];
+                const backgroundColors = [];
+                const borderColors = [];
+
+                const urunBilgileri = {
+                    1: { isim: "Ülker Çikolatalı Gofret", ikon: "🍫" },
+                    2: { isim: "Ülker Halley", ikon: "🥛" },
+                    3: { isim: "Ülker Biskrem", ikon: "🍪" },
+                    4: { isim: "Ülker Albeni", ikon: "🍬" }
+                };
+
+                const renkler = [
+                    "rgba(255, 99, 132, 0.7)",   // Kırmızı
+                    "rgba(54, 162, 235, 0.7)",   // Mavi
+                    "rgba(255, 206, 86, 0.7)",   // Sarı
+                    "rgba(75, 192, 192, 0.7)"    // Yeşil
+                ];
+                const borderRenkler = [
+                    "rgba(255, 99, 132, 1)",
+                    "rgba(54, 162, 235, 1)",
+                    "rgba(255, 206, 86, 1)",
+                    "rgba(75, 192, 192, 1)"
+                ];
+
+                data.forEach(item => {
+                    const info = urunBilgileri[item.urun_id] || { isim: "Ürün " + item.urun_id, ikon: "❓" };
+
+                    // Tabloya ekle
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                    <td>${info.ikon} ${info.isim}</td>
+                    <td>${item.tuketilen_miktar}</td>
+                    <td>${(item.ortalama_yillik_degisim_orani * 100).toFixed(2)}%</td>
+                    <td>${item.tahmin_artis}</td>
+                    <td>${item.tahmin_azalis}</td>
+                `;
+                    tbody.appendChild(tr);
+
+                    // Grafik için veri
+                    labels.push(info.ikon + " " + info.isim);
+                    tuketilen.push(item.tuketilen_miktar);
+
+                    const renkIndex = (item.urun_id - 1) % renkler.length;
+                    backgroundColors.push(renkler[renkIndex]);
+                    borderColors.push(borderRenkler[renkIndex]);
+                });
+
+                // Chart.js bar chart
+                new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Tüketilen Miktar",
+                            data: tuketilen,
+                            backgroundColor: backgroundColors,
+                            borderColor: borderColors,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: true },
+                            tooltip: { mode: 'index', intersect: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            })
+            .catch(err => console.error("Veri çekilirken hata oluştu:", err));
+    });
+</script>
+
+</body>
+</html>
